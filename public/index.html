@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Panel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .workspace-item { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .form-group { margin: 10px 0; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; }
+        .hidden { display: none; }
+        .loading { opacity: 0.6; pointer-events: none; }
+        .back-arrow { cursor: pointer; color: #007bff; font-size: 20px; margin-right: 10px; }
+        .data-section { margin: 20px 0; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+        .user-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .user-item:last-child { border-bottom: none; }
+        .user-info { flex-grow: 1; }
+        .user-actions { display: flex; gap: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Super Admin Panel</h1>
+        
+        <!-- Workspace List View -->
+        <div id="workspace-list">
+            <button class="btn btn-primary" onclick="showAddWorkspace()">Add New Workspace</button>
+            <div id="workspaces-container"></div>
+        </div>
+
+        <!-- Add Workspace Form -->
+        <div id="add-workspace-form" class="hidden">
+            <h2><span class="back-arrow" onclick="showWorkspaceList()">←</span>Add New Workspace</h2>
+            <div class="form-group">
+                <label>Workspace Name:</label>
+                <input type="text" id="workspace-name" placeholder="Enter workspace name">
+            </div>
+            <button class="btn btn-primary" id="create-btn" onclick="createWorkspace()">Create Workspace</button>
+            <button class="btn btn-secondary" onclick="showWorkspaceList()">Cancel</button>
+            <div id="loading-msg" class="hidden">Creating Neon project... Please wait...</div>
+        </div>
+
+        <!-- Workspace Detail View -->
+        <div id="workspace-detail" class="hidden">
+            <h2><span class="back-arrow" onclick="showWorkspaceList()">←</span><span id="workspace-title"></span></h2>
+            
+            <div class="data-section">
+                <h3>Admins <button class="btn btn-success" onclick="showAddAdmin()">Add Admin</button></h3>
+                <div id="admins-container"></div>
+            </div>
+            
+            <div class="data-section">
+                <h3>Users <button class="btn btn-success" onclick="showAddUser()">Add User</button></h3>
+                <div id="users-container"></div>
+            </div>
+        </div>
+
+        <!-- Add Admin Form -->
+        <div id="add-admin-form" class="hidden">
+            <h2><span class="back-arrow" onclick="showCurrentWorkspace()">←</span>Add Admin</h2>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="admin-name" placeholder="Enter admin name">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="admin-email" placeholder="Enter admin email">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="admin-password" placeholder="Enter password">
+            </div>
+            <button class="btn btn-primary" onclick="createAdmin()">Create Admin</button>
+            <button class="btn btn-secondary" onclick="showCurrentWorkspace()">Cancel</button>
+        </div>
+
+        <!-- Add User Form -->
+        <div id="add-user-form" class="hidden">
+            <h2><span class="back-arrow" onclick="showCurrentWorkspace()">←</span>Add User</h2>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="user-name" placeholder="Enter user name">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="user-email" placeholder="Enter user email">
+            </div>
+            <div class="form-group">
+                <label>Password (Optional):</label>
+                <input type="password" id="user-password" placeholder="Enter password">
+            </div>
+            <button class="btn btn-primary" onclick="createUser()">Create User</button>
+            <button class="btn btn-secondary" onclick="showCurrentWorkspace()">Cancel</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
