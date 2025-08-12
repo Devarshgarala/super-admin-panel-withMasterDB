@@ -52,7 +52,9 @@ router.post('/', async (req, res) => {
         // Mirror into workspace-panel aggregator if configured
         try {
             const { upsertWorkspace } = require('../lib/aggregator');
-            await upsertWorkspace(workspace);
+            const { listPublicTables } = require('../lib/workspaceIntrospect');
+            const tables = await listPublicTables(databaseUrl);
+            await upsertWorkspace(workspace, tables);
         } catch (aggErr) {
             console.warn('Aggregator mirror failed (non-blocking):', aggErr.message);
         }

@@ -104,12 +104,14 @@ router.post('/:workspaceId/admins', async (req, res) => {
 
         const admin = Array.isArray(adminResult) ? adminResult[0] : adminResult;
 
-        // Mirror to aggregator (best-effort)
+        // Update aggregator registry tables list (best-effort)
         try {
-            const { recordAdmin } = require('../lib/aggregator');
-            await recordAdmin(workspaceId, admin);
+            const { upsertWorkspace } = require('../lib/aggregator');
+            const { listPublicTables } = require('../lib/workspaceIntrospect');
+            const tables = await listPublicTables(workspace.databaseUrl);
+            await upsertWorkspace(workspace, tables);
         } catch (aggErr) {
-            console.warn('Aggregator admin mirror failed (non-blocking):', aggErr.message);
+            console.warn('Aggregator registry update failed (non-blocking):', aggErr.message);
         }
 
         res.json(admin);
@@ -149,12 +151,14 @@ router.post('/:workspaceId/users', async (req, res) => {
 
         const user = Array.isArray(userResult) ? userResult[0] : userResult;
 
-        // Mirror to aggregator (best-effort)
+        // Update aggregator registry tables list (best-effort)
         try {
-            const { recordUser } = require('../lib/aggregator');
-            await recordUser(workspaceId, user);
+            const { upsertWorkspace } = require('../lib/aggregator');
+            const { listPublicTables } = require('../lib/workspaceIntrospect');
+            const tables = await listPublicTables(workspace.databaseUrl);
+            await upsertWorkspace(workspace, tables);
         } catch (aggErr) {
-            console.warn('Aggregator user mirror failed (non-blocking):', aggErr.message);
+            console.warn('Aggregator registry update failed (non-blocking):', aggErr.message);
         }
 
         res.json(user);
@@ -183,12 +187,14 @@ router.delete('/:workspaceId/admins/:adminId', async (req, res) => {
             where: { id: adminId }
         });
 
-        // Mirror to aggregator (best-effort)
+        // Update aggregator registry tables list (best-effort)
         try {
-            const { deleteAdmin } = require('../lib/aggregator');
-            await deleteAdmin(adminId);
+            const { upsertWorkspace } = require('../lib/aggregator');
+            const { listPublicTables } = require('../lib/workspaceIntrospect');
+            const tables = await listPublicTables(workspace.databaseUrl);
+            await upsertWorkspace(workspace, tables);
         } catch (aggErr) {
-            console.warn('Aggregator admin delete failed (non-blocking):', aggErr.message);
+            console.warn('Aggregator registry update failed (non-blocking):', aggErr.message);
         }
 
         res.json({ message: 'Admin deleted successfully' });
@@ -217,12 +223,14 @@ router.delete('/:workspaceId/users/:userId', async (req, res) => {
             where: { id: userId }
         });
 
-        // Mirror to aggregator (best-effort)
+        // Update aggregator registry tables list (best-effort)
         try {
-            const { deleteUser } = require('../lib/aggregator');
-            await deleteUser(userId);
+            const { upsertWorkspace } = require('../lib/aggregator');
+            const { listPublicTables } = require('../lib/workspaceIntrospect');
+            const tables = await listPublicTables(workspace.databaseUrl);
+            await upsertWorkspace(workspace, tables);
         } catch (aggErr) {
-            console.warn('Aggregator user delete failed (non-blocking):', aggErr.message);
+            console.warn('Aggregator registry update failed (non-blocking):', aggErr.message);
         }
 
         res.json({ message: 'User deleted successfully' });
