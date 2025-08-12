@@ -10,6 +10,9 @@ async function setupWorkspaceDatabase(databaseUrl) {
     try {
         console.log('Setting up workspace database tables...');
 
+        // Ensure pgcrypto for gen_random_uuid
+        await client.$executeRaw`CREATE EXTENSION IF NOT EXISTS pgcrypto;`;
+
         // Create admins table
         await client.$executeRaw`
             CREATE TABLE IF NOT EXISTS admins (

@@ -8,12 +8,12 @@ datasource db {
 }
 
 model Workspace {
-  id            String   @id @default(cuid())
-  name          String   @unique
-  databaseUrl   String
-  neonProjectId String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id            String   @id @default(cuid()) @map("id")
+  name          String   @unique @map("projectname")
+  databaseUrl   String   @map("url")
+  neonProjectId String?  @map("neon_project_id")
+  createdAt     DateTime @default(now()) @map("date_creation")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
-  @@map("workspaces")
+  @@map("projects")
 }

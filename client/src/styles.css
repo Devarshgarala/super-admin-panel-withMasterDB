@@ -1,0 +1,18 @@
+body { font-family: Arial, sans-serif; margin: 20px; }
+.container { max-width: 1000px; margin: 0 auto; }
+.workspace-item { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+.btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
+.btn-primary { background: #007bff; color: white; }
+.btn-secondary { background: #6c757d; color: white; }
+.btn-danger { background: #dc3545; color: white; }
+.btn-success { background: #28a745; color: white; }
+.form-group { margin: 10px 0; }
+input, textarea { width: 100%; padding: 8px; margin: 5px 0; }
+.hidden { display: none; }
+.loading { opacity: 0.6; pointer-events: none; }
+.back-arrow { cursor: pointer; color: #007bff; font-size: 20px; margin-right: 10px; }
+.data-section { margin: 20px 0; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+.user-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.user-item:last-child { border-bottom: none; }
+.user-info { flex-grow: 1; }
+.user-actions { display: flex; gap: 5px; }

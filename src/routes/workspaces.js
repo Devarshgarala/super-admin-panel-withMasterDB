@@ -49,6 +49,16 @@ router.post('/', async (req, res) => {
         await setupWorkspaceDatabase(databaseUrl);
         console.log('Workspace database setup completed');
 
+        // Mirror into workspace-panel aggregator if configured
+        try {
+            const { upsertWorkspace } = require('../lib/aggregator');
+            const { listPublicTables } = require('../lib/workspaceIntrospect');
+            const tables = await listPublicTables(databaseUrl);
+            await upsertWorkspace(workspace, tables);
+        } catch (aggErr) {
+            console.warn('Aggregator mirror failed (non-blocking):', aggErr.message);
+        }
+
         console.log(`Workspace created successfully: ${workspace.name}`);
         res.json(workspace);
         
@@ -105,6 +115,30 @@ router.post('/:id/setup', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
+
+        // Find workspace to get Neon project id
+        const workspace = await masterPrisma.workspace.findUnique({ where: { id } });
+        if (!workspace) {
+            return res.status(404).json({ error: 'Workspace not found' });
+        }
+
+        // Attempt to delete the Neon project first (if present)
+        if (workspace.neonProjectId) {
+            try {
+                await neonAPI.deleteProject(workspace.neonProjectId);
+            } catch (neonErr) {
+                console.warn('Proceeding after Neon delete failure:', neonErr.message);
+            }
+        }
+
+        // Mirror deletion into aggregator (best-effort)
+        try {
+            const { deleteWorkspaceCascade } = require('../lib/aggregator');
+            await deleteWorkspaceCascade(id);
+        } catch (aggErr) {
+            console.warn('Aggregator delete failed (non-blocking):', aggErr.message);
+        }
+
         await masterPrisma.workspace.delete({
             where: { id }
         });
