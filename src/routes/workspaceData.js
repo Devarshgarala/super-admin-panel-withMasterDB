@@ -103,6 +103,15 @@ router.post('/:workspaceId/admins', async (req, res) => {
         });
 
         const admin = Array.isArray(adminResult) ? adminResult[0] : adminResult;
+
+        // Mirror to aggregator (best-effort)
+        try {
+            const { recordAdmin } = require('../lib/aggregator');
+            await recordAdmin(workspaceId, admin);
+        } catch (aggErr) {
+            console.warn('Aggregator admin mirror failed (non-blocking):', aggErr.message);
+        }
+
         res.json(admin);
     } catch (error) {
         console.error('Error creating admin:', error);
@@ -139,6 +148,15 @@ router.post('/:workspaceId/users', async (req, res) => {
         });
 
         const user = Array.isArray(userResult) ? userResult[0] : userResult;
+
+        // Mirror to aggregator (best-effort)
+        try {
+            const { recordUser } = require('../lib/aggregator');
+            await recordUser(workspaceId, user);
+        } catch (aggErr) {
+            console.warn('Aggregator user mirror failed (non-blocking):', aggErr.message);
+        }
+
         res.json(user);
     } catch (error) {
         console.error('Error creating user:', error);
@@ -165,6 +183,14 @@ router.delete('/:workspaceId/admins/:adminId', async (req, res) => {
             where: { id: adminId }
         });
 
+        // Mirror to aggregator (best-effort)
+        try {
+            const { deleteAdmin } = require('../lib/aggregator');
+            await deleteAdmin(adminId);
+        } catch (aggErr) {
+            console.warn('Aggregator admin delete failed (non-blocking):', aggErr.message);
+        }
+
         res.json({ message: 'Admin deleted successfully' });
     } catch (error) {
         console.error('Error deleting admin:', error);
@@ -190,6 +216,14 @@ router.delete('/:workspaceId/users/:userId', async (req, res) => {
         await workspaceClient.user.delete({
             where: { id: userId }
         });
+
+        // Mirror to aggregator (best-effort)
+        try {
+            const { deleteUser } = require('../lib/aggregator');
+            await deleteUser(userId);
+        } catch (aggErr) {
+            console.warn('Aggregator user delete failed (non-blocking):', aggErr.message);
+        }
 
         res.json({ message: 'User deleted successfully' });
     } catch (error) {

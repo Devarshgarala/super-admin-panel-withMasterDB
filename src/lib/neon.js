@@ -93,6 +93,22 @@ class NeonAPI {
             }
         }
     }
+
+    async deleteProject(projectId) {
+        try {
+            console.log(`Deleting Neon project: ${projectId}`);
+            await axios.delete(
+                `${NEON_API_BASE}/projects/${projectId}`,
+                { headers: this.headers }
+            );
+            console.log('Neon project deleted successfully');
+            return true;
+        } catch (error) {
+            const message = error.response?.data?.message || error.message;
+            console.error('Error deleting Neon project:', message);
+            throw new Error(`Failed to delete Neon project: ${message}`);
+        }
+    }
 }
 
 module.exports = NeonAPI;
